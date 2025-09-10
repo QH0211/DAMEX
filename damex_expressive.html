@@ -1,0 +1,3876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAMEX Transports - Logística Federal Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <style>
+    /* Material Expressive 3 Variables - DAMEX Brand Colors */
+    :root {
+      /* Primary Colors - Inspired by DAMEX Logo */
+      --md-sys-color-primary: #1565C0;
+      --md-sys-color-on-primary: #FFFFFF;
+      --md-sys-color-primary-container: #D1E4FF;
+      --md-sys-color-on-primary-container: #001D36;
+      
+      /* Secondary Colors - Orange from DAMEX */
+      --md-sys-color-secondary: #FF6F00;
+      --md-sys-color-on-secondary: #FFFFFF;
+      --md-sys-color-secondary-container: #FFE0B2;
+      --md-sys-color-on-secondary-container: #2E1500;
+      
+      /* Tertiary Colors - Complementary */
+      --md-sys-color-tertiary: #00695C;
+      --md-sys-color-on-tertiary: #FFFFFF;
+      --md-sys-color-tertiary-container: #B2DFDB;
+      --md-sys-color-on-tertiary-container: #002019;
+      
+      /* Surface Colors */
+      --md-sys-color-surface: #FEFBFF;
+      --md-sys-color-on-surface: #1A1C1E;
+      --md-sys-color-surface-variant: #E1E2EC;
+      --md-sys-color-on-surface-variant: #44474F;
+      --md-sys-color-surface-container: #F3F4FA;
+      --md-sys-color-surface-container-high: #EDEEF4;
+      --md-sys-color-surface-container-highest: #E8E9EF;
+      
+      /* Background */
+      --md-sys-color-background: #FEFBFF;
+      --md-sys-color-on-background: #1A1C1E;
+      
+      /* Outline */
+      --md-sys-color-outline: #74777F;
+      --md-sys-color-outline-variant: #C4C7CF;
+      
+      /* Error */
+      --md-sys-color-error: #BA1A1A;
+      --md-sys-color-on-error: #FFFFFF;
+      --md-sys-color-error-container: #FFDAD6;
+      --md-sys-color-on-error-container: #410002;
+      
+      /* Elevation Shadows */
+      --md-sys-elevation-level0: none;
+      --md-sys-elevation-level1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+      --md-sys-elevation-level2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+      --md-sys-elevation-level3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
+      --md-sys-elevation-level4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px 0px rgba(0, 0, 0, 0.30);
+      --md-sys-elevation-level5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px 0px rgba(0, 0, 0, 0.30);
+      
+      /* Motion Tokens */
+      --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+      --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+      --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+      --md-sys-motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+      --md-sys-motion-duration-short1: 50ms;
+      --md-sys-motion-duration-short2: 100ms;
+      --md-sys-motion-duration-short3: 150ms;
+      --md-sys-motion-duration-short4: 200ms;
+      --md-sys-motion-duration-medium1: 250ms;
+      --md-sys-motion-duration-medium2: 300ms;
+      --md-sys-motion-duration-medium3: 350ms;
+      --md-sys-motion-duration-medium4: 400ms;
+      --md-sys-motion-duration-long1: 450ms;
+      --md-sys-motion-duration-long2: 500ms;
+      --md-sys-motion-duration-long3: 550ms;
+      --md-sys-motion-duration-long4: 600ms;
+    }
+
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Scroll animations */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    
+    .fade-in-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .slide-in-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .slide-in-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .slide-in-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .slide-in-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .scale-in {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    
+    .scale-in.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    /* Initial page load animations */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* Hero section initial animations */
+    .hero-text {
+      animation: slideInLeft 0.8s ease-out;
+    }
+    
+    .hero-visual {
+      animation: slideInRight 0.8s ease-out 0.2s both;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--md-sys-color-on-background);
+      background: var(--md-sys-color-background);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--md-sys-color-primary);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+      box-shadow: var(--md-sys-elevation-level2);
+    }
+
+    .header.scrolled {
+      box-shadow: var(--md-sys-elevation-level4);
+      backdrop-filter: blur(20px);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo img {
+      height: 48px;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--md-sys-color-on-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-link {
+      color: var(--md-sys-color-on-primary);
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 24px;
+      font-weight: 500;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .nav-link.active {
+      background: var(--md-sys-color-secondary);
+      color: var(--md-sys-color-on-secondary);
+    }
+
+    .cta-button {
+      background: var(--md-sys-color-secondary);
+      color: var(--md-sys-color-on-secondary);
+      border: none;
+      border-radius: 28px;
+      padding: 16px 32px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      box-shadow: var(--md-sys-elevation-level2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cta-button:hover {
+      box-shadow: var(--md-sys-elevation-level3);
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* Footer Styles */
+    .footer-section {
+      background: linear-gradient(135deg, #1e40af 0%, #1565C0 100%);
+      color: white;
+      padding: 60px 0 20px 0;
+      margin-top: 80px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-column h3, .footer-column h4 {
+      margin-bottom: 20px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .footer-logo p {
+      color: #D1E4FF;
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+
+    .footer-description {
+      color: #D1E4FF;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 10px;
+      color: #D1E4FF;
+      font-size: 0.9rem;
+    }
+
+    .footer-links a {
+      color: #D1E4FF;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    .footer-contact p {
+      margin: 8px 0;
+      color: #D1E4FF;
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 20px;
+      text-align: center;
+    }
+
+    .footer-bottom-content p {
+      margin: 5px 0;
+      color: #D1E4FF;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      .footer-section {
+        padding: 40px 0 20px 0;
+      }
+    }
+
+    /* Contact Section Styles */
+    .contact-section {
+      background: linear-gradient(135deg, var(--md-sys-color-surface-container) 0%, var(--md-sys-color-surface-container-high) 100%);
+      padding: 80px 0;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    .hero-bg-element {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .hero-bg-element:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      right: 10%;
+      animation-delay: 0s;
+    }
+
+    .hero-bg-element:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      bottom: 20%;
+      left: 5%;
+      animation-delay: 2s;
+    }
+
+    .hero-bg-element:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      top: 60%;
+      right: 30%;
+      animation-delay: 4s;
+    }
+
+    .hero-content {
+      max-width: 1400px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .hero-text {
+      animation: slideInFromLeft var(--md-sys-motion-duration-long4) var(--md-sys-motion-easing-emphasized-decelerate) 0.3s both;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--md-sys-color-on-primary);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 32px;
+      line-height: 1.4;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: slideInFromRight var(--md-sys-motion-duration-long4) var(--md-sys-motion-easing-emphasized-decelerate) 0.5s both;
+    }
+
+    .hero-image {
+      max-width: 100%;
+      height: auto;
+      filter: brightness(0) invert(1) drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--md-sys-color-on-primary);
+      color: var(--md-sys-color-primary);
+      border: none;
+      border-radius: 28px;
+      padding: 18px 36px;
+      font-weight: 600;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      box-shadow: var(--md-sys-elevation-level2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary:hover {
+      box-shadow: var(--md-sys-elevation-level4);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--md-sys-color-on-primary);
+      border: 2px solid var(--md-sys-color-on-primary);
+      border-radius: 28px;
+      padding: 16px 34px;
+      font-weight: 600;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--md-sys-color-on-primary);
+      color: var(--md-sys-color-primary);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    /* Sections */
+    .section {
+      padding: 80px 32px;
+    }
+
+    .section-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--md-sys-color-on-background);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      font-size: 1.25rem;
+      color: var(--md-sys-color-on-surface-variant);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Services Section */
+    .services-section {
+      background: var(--md-sys-color-surface-container);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+    }
+
+    .service-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #8b5cf6, #3b82f6, #06b6d4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .service-card:hover {
+      box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .service-card:hover::before {
+      opacity: 1;
+    }
+
+    .service-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+      background: var(--md-sys-color-primary-container);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    }
+
+    .service-icon .material-icons-round {
+      font-size: 32px;
+      color: var(--md-sys-color-on-primary-container);
+    }
+
+    .service-card:hover .service-icon {
+      transform: scale(1.1) rotate(5deg);
+      background: var(--md-sys-color-primary);
+    }
+
+    .service-card:hover .service-icon .material-icons-round {
+      color: var(--md-sys-color-on-primary);
+    }
+
+    .service-title {
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 12px;
+    }
+
+    .service-description {
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .service-features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .service-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-bottom: 8px;
+    }
+
+    .service-features .material-icons-round {
+      font-size: 16px;
+      color: var(--md-sys-color-primary);
+    }
+
+    .service-products {
+      margin: 16px 0;
+      max-height: 200px;
+      overflow-y: auto;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px;
+    }
+
+    .product-item {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .product-item:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateX(4px);
+    }
+
+    .product-code {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--md-sys-color-primary);
+      background: rgba(37, 99, 235, 0.1);
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .product-name {
+      font-size: 0.85rem;
+      color: var(--md-sys-color-on-surface);
+      line-height: 1.3;
+    }
+
+    .product-price {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--md-sys-color-tertiary);
+    }
+
+    /* Service Categories in Quotation */
+    .service-category {
+      margin-bottom: 20px;
+      border-radius: 16px;
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      overflow: hidden;
+    }
+
+    .category-header {
+      padding: 20px 24px;
+      background: var(--md-sys-color-primary-container);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+      font-weight: 600;
+      color: var(--md-sys-color-on-primary-container);
+    }
+
+    .category-header:hover {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+
+    .category-header.expanded {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+
+    .category-arrow {
+      transition: transform 0.2s ease;
+    }
+
+    .category-header.expanded .category-arrow {
+      transform: rotate(180deg);
+    }
+
+    .category-content {
+      display: none;
+      padding: 16px;
+      background: var(--md-sys-color-surface);
+    }
+
+    .category-content.expanded {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    .quotation-container .product-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: var(--md-sys-color-surface-container);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      border: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .quotation-container .product-item:hover {
+      background: var(--md-sys-color-primary-container);
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .quotation-container .product-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .quotation-container .product-code {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+      background: var(--md-sys-color-primary-container);
+      padding: 4px 8px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    .quotation-container .product-name {
+      font-size: 0.9rem;
+      color: var(--md-sys-color-on-surface);
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    .quotation-container .product-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--md-sys-color-tertiary);
+    }
+
+    .quantity-input {
+      width: 80px;
+      padding: 8px 12px;
+      border: 1px solid var(--md-sys-color-outline);
+      border-radius: 8px;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .service-cta {
+      width: 100%;
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      border: none;
+      border-radius: 24px;
+      padding: 16px 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .service-cta:hover {
+      background: var(--md-sys-color-secondary);
+      transform: translateY(-2px);
+    }
+
+    /* Animations */
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-80px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(80px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-30px);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .header {
+        padding: 0 24px;
+      }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.125rem;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+      }
+
+      .section {
+        padding: 60px 24px;
+      }
+
+      .section-header {
+        margin-bottom: 40px;
+      }
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--md-sys-color-surface);
+      border-top: 1px solid var(--md-sys-color-outline-variant);
+      padding: 8px 0;
+      z-index: 1000;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-nav-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 100%;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--md-sys-color-on-surface-variant);
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      min-width: 60px;
+    }
+
+    .mobile-nav-item.active {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+    }
+
+    .mobile-nav-item .material-icons-round {
+      font-size: 20px;
+    }
+
+    .mobile-nav-item span {
+      font-size: 10px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .hamburger-menu {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    }
+
+    .hamburger-line {
+      width: 24px;
+      height: 2px;
+      background: var(--md-sys-color-on-primary);
+      margin: 2px 0;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 0 16px;
+        height: 64px;
+      }
+
+      .main-content {
+        margin-top: 64px;
+        margin-bottom: 80px; /* Space for bottom nav */
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .mobile-nav {
+        display: block;
+      }
+
+      .hamburger-menu {
+        display: flex;
+      }
+
+      .hero-section {
+        padding: 32px 16px;
+        min-height: 85vh;
+        background: linear-gradient(180deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-secondary) 100%);
+      }
+
+      .hero-content {
+        gap: 24px;
+        text-align: center;
+      }
+
+      .hero-visual {
+        order: -1;
+      }
+
+      .hero-image {
+        max-width: 200px;
+        margin: 0 auto;
+      }
+
+      .hero-title {
+        font-size: 2.25rem;
+        margin-bottom: 16px;
+        line-height: 1.2;
+      }
+
+      .hero-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 32px;
+        line-height: 1.5;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        padding: 18px 24px;
+        font-size: 16px;
+        border-radius: 32px;
+        font-weight: 600;
+      }
+
+      .section {
+        padding: 50px 16px;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .section-header {
+        margin-bottom: 32px;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .service-card {
+        padding: 28px 24px;
+        border-radius: 20px;
+        background: var(--md-sys-color-surface);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .service-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+
+      .service-features li {
+        margin-bottom: 0;
+        font-size: 0.875rem;
+      }
+
+      .service-cta {
+        padding: 16px 24px;
+        border-radius: 20px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .modal-container {
+        margin: 10px;
+        max-height: 85vh;
+      }
+        
+      .modal-header, .modal-content {
+        padding: 20px;
+      }
+        
+      .modal-actions {
+        flex-direction: column;
+      }
+        
+      .modal-actions button {
+        min-width: auto;
+      }
+        
+      .floating-total {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section {
+        padding: 24px 16px;
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .hero-content {
+        gap: 20px;
+      }
+
+      .hero-image {
+        max-width: 160px;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+        margin-bottom: 12px;
+        line-height: 1.1;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 28px;
+        line-height: 1.4;
+      }
+
+      .section {
+        padding: 32px 16px;
+      }
+
+      .section-title {
+        font-size: 1.875rem;
+        margin-bottom: 12px;
+      }
+
+      .section-subtitle {
+        font-size: 1rem;
+      }
+
+      .section-header {
+        margin-bottom: 28px;
+      }
+
+      .service-card {
+        padding: 24px 20px;
+        border-radius: 16px;
+      }
+
+      .service-icon {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 16px;
+      }
+
+      .service-icon .material-icons-round {
+        font-size: 26px;
+      }
+
+      .service-title {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+      }
+
+      .service-description {
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+        line-height: 1.4;
+      }
+
+      .service-features {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        margin-bottom: 20px;
+      }
+
+      .service-features li {
+        font-size: 0.85rem;
+      }
+
+      /* Mobile-specific quotation optimizations */
+      .quotation-container {
+        padding: 16px;
+        border-radius: 16px;
+        margin-top: 16px;
+      }
+
+      .quotation-tabs {
+        margin-bottom: 20px;
+      }
+
+      .tab-button {
+        padding: 12px 8px;
+        font-size: 14px;
+      }
+
+      .form-title {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+      }
+
+      .form-input,
+      .form-textarea {
+        padding: 16px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 12px;
+      }
+
+      .continue-btn {
+        padding: 18px;
+        font-size: 16px;
+        border-radius: 24px;
+      }
+
+      /* Mobile contact optimizations */
+      .contact-item {
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      .contact-btn {
+        padding: 18px 20px;
+        border-radius: 20px;
+        font-size: 15px;
+      }
+
+      /* Floating total mobile optimization */
+      .floating-total {
+        bottom: 90px; /* Above bottom nav */
+        left: 16px;
+        right: 16px;
+        padding: 16px 20px;
+        border-radius: 16px;
+      }
+
+      .total-amount {
+        font-size: 20px;
+      }
+    }
+
+    /* Quotation System Styles */
+    .quotation-container {
+      background: var(--md-sys-color-surface);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: var(--md-sys-elevation-level2);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      margin-top: 24px;
+    }
+
+    .quotation-tabs {
+      display: flex;
+      background: var(--md-sys-color-surface-variant);
+      border-radius: 16px;
+      padding: 6px;
+      margin-bottom: 24px;
+      gap: 6px;
+    }
+
+    .tab-button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      color: var(--md-sys-color-on-surface-variant);
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .tab-button.active {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      box-shadow: var(--md-sys-elevation-level2);
+      transform: translateY(-2px);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 4px;
+    }
+
+    .form-input,
+    .form-textarea {
+      background: var(--md-sys-color-surface-container);
+      border: 2px solid var(--md-sys-color-outline-variant);
+      border-radius: 16px;
+      padding: 16px 20px;
+      font-size: 16px;
+      color: var(--md-sys-color-on-surface);
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--md-sys-color-primary);
+      box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.2);
+      background: var(--md-sys-color-surface);
+    }
+
+    .checkbox-group {
+      margin: 32px 0;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      cursor: pointer;
+      color: var(--md-sys-color-on-surface-variant);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkmark {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--md-sys-color-outline);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .checkbox-label input[type="checkbox"]:checked + .checkmark {
+      background: var(--md-sys-color-primary);
+      border-color: var(--md-sys-color-primary);
+    }
+
+    .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+      content: '✓';
+      color: var(--md-sys-color-on-primary);
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .continue-btn {
+      width: 100%;
+      margin-top: 32px;
+      padding: 20px;
+      font-size: 18px;
+    }
+
+    /* Services Categories */
+    .service-category {
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: 20px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    }
+
+    .category-header {
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      padding: 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 18px;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    }
+
+    .category-header:hover {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+    }
+
+    .category-arrow {
+      transition: transform var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    }
+
+    .category-header.expanded .category-arrow {
+      transform: rotate(180deg);
+    }
+
+    .category-content {
+      display: none;
+      padding: 24px;
+    }
+
+    .category-content.expanded {
+      display: block;
+      animation: slideDown var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+    }
+
+    .product-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      border: 2px solid var(--md-sys-color-outline-variant);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      background: var(--md-sys-color-surface);
+    }
+
+    .product-item:hover {
+      background: var(--md-sys-color-surface-container);
+      border-color: var(--md-sys-color-primary);
+      transform: translateY(-2px);
+    }
+
+    .product-checkbox {
+      width: 24px;
+      height: 24px;
+      accent-color: var(--md-sys-color-primary);
+      cursor: pointer;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .product-code {
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .product-name {
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .product-price {
+      color: var(--md-sys-color-secondary);
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .quantity-input {
+      width: 100px;
+      padding: 12px 16px;
+      border: 2px solid var(--md-sys-color-outline-variant);
+      border-radius: 12px;
+      text-align: center;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    /* Floating Total */
+    .floating-total {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--md-sys-color-primary-container);
+      border: 2px solid var(--md-sys-color-primary);
+      border-radius: 24px;
+      padding: 16px 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .floating-total:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .total-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .total-label {
+      font-size: 0.875rem;
+      color: var(--md-sys-color-on-primary-container);
+      font-weight: 500;
+    }
+
+    .total-amount {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex !important;
+    }
+
+    .modal-container {
+      background: var(--md-sys-color-surface);
+      border-radius: 28px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      padding: 8px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--md-sys-color-on-surface-variant);
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--md-sys-color-surface-variant);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .modal-content {
+      padding: 24px 28px;
+    }
+
+    .selected-products-section h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .products-list {
+      background: var(--md-sys-color-surface-container);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .product-item-modal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .product-item-modal:last-child {
+      border-bottom: none;
+    }
+
+    .product-info-modal {
+      flex: 1;
+    }
+
+    .product-code-modal {
+      font-weight: 600;
+      color: var(--md-sys-color-primary);
+      font-size: 0.875rem;
+    }
+
+    .product-name-modal {
+      color: var(--md-sys-color-on-surface);
+      font-size: 0.875rem;
+      margin: 2px 0;
+    }
+
+    .product-price-modal {
+      color: var(--md-sys-color-on-surface-variant);
+      font-size: 0.875rem;
+    }
+
+    .total-display {
+      text-align: center;
+      padding: 16px;
+      background: var(--md-sys-color-primary-container);
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .total-display strong {
+      font-size: 1.25rem;
+      color: var(--md-sys-color-on-primary-container);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+      border: 1px solid var(--md-sys-color-secondary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--md-sys-color-secondary);
+      color: var(--md-sys-color-on-secondary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Health Policy Styles */
+    .health-policy-section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .health-policy-section h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .health-info-card {
+      background: var(--md-sys-color-surface-container);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .health-intro {
+      margin-bottom: 20px;
+    }
+
+    .health-intro p {
+      margin: 0;
+      color: var(--md-sys-color-on-surface-variant);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .health-checklist h4 {
+      margin: 0 0 12px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .conditions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .condition-checkbox {
+      display: flex;
+      align-items: center;
+      background: var(--md-sys-color-surface-container-high);
+      border: 2px solid var(--md-sys-color-outline-variant);
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .condition-checkbox:hover {
+      background: var(--md-sys-color-primary-container);
+      border-color: var(--md-sys-color-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .condition-checkbox input[type="checkbox"] {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .condition-checkbox input[type="checkbox"]:checked + .condition-text {
+      font-weight: 600;
+      color: var(--md-sys-color-primary);
+    }
+
+    .condition-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .condition-text .material-icons-round {
+      font-size: 18px;
+    }
+
+    .condition-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface);
+      transition: all 0.2s ease;
+    }
+
+    .health-situation {
+      margin-bottom: 16px;
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 12px 16px;
+      border: 2px solid var(--md-sys-color-outline-variant);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+      resize: vertical;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--md-sys-color-primary);
+    }
+
+    .health-acceptance {
+      margin-bottom: 16px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-text {
+      color: var(--md-sys-color-on-surface);
+      flex: 1;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      background: var(--md-sys-color-surface-container);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 24px;
+    }
+
+    .contact-title {
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 24px;
+    }
+
+    .contact-items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--md-sys-color-surface);
+      border-radius: 12px;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      border: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .contact-item:hover {
+      background: var(--md-sys-color-surface-container-high);
+      transform: translateY(-4px);
+      box-shadow: var(--md-sys-elevation-level2);
+    }
+
+    .contact-item .material-icons-round {
+      color: var(--md-sys-color-primary);
+      font-size: 28px;
+    }
+
+    .contact-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .contact-value {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .contact-buttons {
+      display: flex;
+      gap: 16px;
+    }
+
+    .contact-btn {
+      flex: 1;
+      border: none;
+      border-radius: 24px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+      box-shadow: var(--md-sys-elevation-level2);
+    }
+
+    .whatsapp-btn {
+      background: #25D366;
+      color: white;
+    }
+
+    .whatsapp-btn:hover {
+      background: #128C7E;
+      transform: translateY(-4px);
+      box-shadow: var(--md-sys-elevation-level4);
+    }
+
+    .gmail-btn {
+      background: #EA4335;
+      color: white;
+    }
+
+    .gmail-btn:hover {
+      background: #D33B2C;
+      transform: translateY(-4px);
+      box-shadow: var(--md-sys-elevation-level4);
+    }
+
+    .contact-form-section {
+      background: var(--md-sys-color-surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 20px;
+      font-size: 18px;
+    }
+
+    .privacy-notice {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--md-sys-color-surface-variant);
+      border-radius: 16px;
+      font-size: 14px;
+      color: var(--md-sys-color-on-surface-variant);
+      text-align: center;
+    }
+
+    .privacy-notice a {
+      color: var(--md-sys-color-primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .privacy-notice a:hover {
+      text-decoration: underline;
+    }
+
+    /* Additional Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 2000px;
+      }
+    }
+
+    @keyframes slideInFromBottom {
+      from {
+        opacity: 0;
+        transform: translateY(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .quotation-container {
+        padding: 24px;
+      }
+
+      .floating-total {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        justify-content: space-between;
+        padding: 16px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .contact-buttons {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .tab-button span:last-child {
+        display: none;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .service-products {
+        max-height: 150px;
+      }
+
+      .product-item {
+        grid-template-columns: 50px 1fr auto;
+        gap: 8px;
+        padding: 6px 8px;
+      }
+
+      .product-code {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+      }
+
+      .product-name {
+        font-size: 0.8rem;
+      }
+
+      .product-price {
+        font-size: 0.85rem;
+      }
+
+      .quotation-container {
+        padding: 20px;
+      }
+
+      .contact-form-section {
+        padding: 20px;
+      }
+
+      .contact-grid {
+        gap: 24px;
+      }
+
+      .contact-items {
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .contact-item {
+        padding: 12px;
+      }
+
+      .form-grid {
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .form-input,
+      .form-textarea {
+        padding: 16px;
+        font-size: 16px;
+        border-radius: 12px;
+      }
+
+      /* Touch-friendly improvements */
+      .product-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 4px;
+      }
+
+      .quantity-input {
+        width: 80px;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      .product-item {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+
+      .category-header {
+        padding: 20px;
+        font-size: 16px;
+      }
+
+      .category-content {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-content">
+      <div class="logo">
+        <img src="Bannerdamex.png" alt="DAMEX Logo">
+        <span class="logo-text">DAMEX</span>
+      </div>
+      <nav class="nav">
+        <a href="#inicio" class="nav-link active" onclick="navigateToSection('inicio')">Inicio</a>
+        <a href="#servicios" class="nav-link" onclick="navigateToSection('servicios')">Servicios</a>
+        <a href="#cotizaciones" class="nav-link" onclick="navigateToSection('cotizaciones')">Cotizaciones</a>
+        <a href="#contacto" class="nav-link" onclick="navigateToSection('contacto')">Contacto</a>
+      </nav>
+      <button class="cta-button" onclick="navigateToSection('cotizaciones')">
+        🧮
+        Cotizar Ahora
+      </button>
+      <div class="hamburger-menu" onclick="toggleMobileMenu()">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section fade-in-section" id="inicio">
+      <div class="hero-bg-elements">
+        <div class="hero-bg-element"></div>
+        <div class="hero-bg-element"></div>
+        <div class="hero-bg-element"></div>
+      </div>
+      
+      <div class="hero-content">
+        <div class="hero-text slide-in-left">
+          <h1 class="hero-title">Gestiona tu logística federal digital</h1>
+          <p class="hero-subtitle">Simplifica todos tus trámites federales de transporte con DAMEX. Exámenes psicofísicos, licencias digitales y capacitación especializada en un solo lugar.</p>
+          <div class="hero-cta">
+            <button class="btn-primary" onclick="navigateToSection('cotizaciones')">
+              🧮
+              Cotizar Gratis
+            </button>
+            <button class="btn-secondary" onclick="navigateToSection('servicios')">
+              ℹ️
+              Ver Servicios
+            </button>
+          </div>
+        </div>
+        <div class="hero-visual slide-in-right">
+          <img src="Bannerdamex.png" alt="DAMEX Transports" class="hero-image">
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section section fade-in-section" id="servicios">
+      <div class="section-container">
+        <div class="section-header scale-in">
+          <h2 class="section-title">Nuestros Servicios</h2>
+          <p class="section-subtitle">Soluciones integrales para el transporte federal con la más alta calidad y profesionalismo</p>
+        </div>
+        
+        <div class="services-grid">
+          <!-- Exámenes Psicofísicos -->
+          <div class="service-card slide-in-left">
+            <div class="service-icon">
+              🏥
+            </div>
+            <h3 class="service-title">Exámenes Psicofísicos</h3>
+            <p class="service-description">Evaluaciones médicas y psicológicas certificadas para conductores de transporte federal, cumpliendo con todos los estándares de la SCT.</p>
+            <ul class="service-features">
+              <li>✅ Exámenes presenciales y virtuales</li>
+              <li>✅ Terceros autorizados SCT</li>
+              <li>✅ Todas las categorías</li>
+              <li>✅ Resultados rápidos</li>
+            </ul>
+            <button class="service-cta" onclick="navigateToSection('cotizaciones')">
+              🧮
+              Cotizar Servicio
+            </button>
+          </div>
+
+          <!-- Cursos de Capacitación -->
+          <div class="service-card scale-in">
+            <div class="service-icon">
+              🎓
+            </div>
+            <h3 class="service-title">Cursos de Capacitación</h3>
+            <p class="service-description">Programas de formación especializada para conductores profesionales, incluyendo manejo de materiales peligrosos y técnicas defensivas.</p>
+            <ul class="service-features">
+              <li>✅ Categorías A, B, C, E</li>
+              <li>✅ Materiales peligrosos</li>
+              <li>✅ Modalidad presencial y virtual</li>
+              <li>✅ Certificación oficial</li>
+            </ul>
+            <button class="service-cta" onclick="navigateToSection('cotizaciones')">
+              🧮
+              Cotizar Servicio
+            </button>
+          </div>
+
+          <!-- Licencias Federales -->
+          <div class="service-card slide-in-right">
+            <div class="service-icon">
+              🏅
+            </div>
+            <h3 class="service-title">Licencias Federales Digitales</h3>
+            <p class="service-description">Gestión completa para obtener tu licencia federal digital de manera rápida, segura y con total respaldo legal.</p>
+            <ul class="service-features">
+              <li>✅ Todas las categorías disponibles</li>
+              <li>✅ Proceso 100% digital</li>
+              <li>✅ Renovaciones y nuevas</li>
+              <li>✅ Entrega a domicilio</li>
+            </ul>
+            <button class="service-cta" onclick="navigateToSection('cotizaciones')">
+              🧮
+              Cotizar Servicio
+            </button>
+          </div>
+
+          <!-- Servicios Adicionales -->
+          <div class="service-card slide-in-left">
+            <div class="service-icon">
+              ⚙️
+            </div>
+            <h3 class="service-title">Servicios Adicionales</h3>
+            <p class="service-description">Servicios complementarios y especializados para completar tu proceso de licencias federales.</p>
+            <ul class="service-features">
+              <li>✅ Cambios de categoría</li>
+              <li>✅ Logística especializada</li>
+              <li>✅ Servicios foráneos</li>
+              <li>✅ Gestión de trámites</li>
+            </ul>
+            <button class="service-cta" onclick="navigateToSection('cotizaciones')">
+              🧮
+              Cotizar Servicio
+            </button>
+          </div>
+
+          <!-- Paquetes Especiales -->
+          <div class="service-card scale-in">
+            <div class="service-icon">
+              📦
+            </div>
+            <h3 class="service-title">Paquetes Especiales</h3>
+            <p class="service-description">Paquetes completos con descuentos especiales que incluyen múltiples servicios integrados.</p>
+            <ul class="service-features">
+              <li>✅ Paquetes todo incluido</li>
+              <li>✅ Descuentos especiales</li>
+              <li>✅ Proceso simplificado</li>
+              <li>✅ Ahorro garantizado</li>
+            </ul>
+            <button class="service-cta" onclick="navigateToSection('cotizaciones')">
+              🧮
+              Cotizar Servicio
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quotation Section -->
+    <section class="quotation-section section fade-in-section" id="cotizaciones">
+      <div class="section-container">
+        <div class="section-header scale-in">
+          <h2 class="section-title">Sistema de Cotización</h2>
+          <p class="section-subtitle">Obtén tu cotización personalizada en minutos con nuestro sistema inteligente</p>
+        </div>
+        
+        <div class="quotation-container slide-in-left">
+          <!-- Tab Navigation -->
+          <div class="quotation-tabs">
+            <button class="tab-button active" onclick="switchTab('cliente')" data-tab="cliente">
+              👤
+              <span>Información del Cliente</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('servicios')" data-tab="servicios">
+              🏥
+              <span>Seleccionar Servicios</span>
+            </button>
+          </div>
+
+          <!-- Cliente Tab -->
+          <div class="tab-content active" id="clienteTab">
+            <div class="client-form">
+              <h3 class="form-title">Datos del Cliente</h3>
+              <div class="form-grid">
+                <div class="input-group">
+                  <label class="input-label">Nombre Completo *</label>
+                  <input type="text" id="nombreCliente" class="form-input" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Email *</label>
+                  <input type="email" id="emailCliente" class="form-input" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Teléfono</label>
+                  <input type="tel" id="telefonoCliente" class="form-input">
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Empresa</label>
+                  <input type="text" id="empresaCliente" class="form-input">
+                </div>
+              </div>
+              <button class="btn-primary continue-btn" onclick="continueToServices()">
+                Continuar a Servicios
+              </button>
+            </div>
+          </div>
+
+          <!-- Servicios Tab -->
+          <div class="tab-content" id="serviciosTab">
+            <div class="services-form">
+              <h3 class="form-title">Selecciona tus Servicios</h3>
+              <div class="services-intro">
+                <p>Selecciona los servicios que necesitas. Tenemos 26 productos organizados en 5 categorías principales.</p>
+              </div>
+              <div id="servicesCategories">
+                <!-- Exámenes Psicofísicos -->
+                <div class="service-category">
+                  <div class="category-header" onclick="toggleCategory('examenes')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      🏥
+                      <span>Exámenes Psicofísicos</span>
+                    </div>
+                    <span class="category-arrow">⬇️</span>
+                  </div>
+                  <div class="category-content" id="examenesContent">
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF01', 'EXAMEN PSICOFÍSICO INTEGRAL SCT PRESENCIAL', 3500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF01</div>
+                        <div class="product-name">EXAMEN PSICOFÍSICO INTEGRAL SCT PRESENCIAL</div>
+                        <div class="product-price">$3,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF01', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF02', 'EXAMEN PSICOFÍSICO INTEGRAL TERCEROS AUTORIZADOS PRESENCIAL', 5500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF02</div>
+                        <div class="product-name">EXAMEN PSICOFÍSICO INTEGRAL TERCEROS AUTORIZADOS PRESENCIAL</div>
+                        <div class="product-price">$5,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF02', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF17', 'EXAMEN PSICOFÍSICO INTEGRAL NP', 16000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF17</div>
+                        <div class="product-name">EXAMEN PSICOFÍSICO INTEGRAL NP</div>
+                        <div class="product-price">$16,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF17', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF18', 'EXAMEN PSICOFÍSICO INTEGRAL NP EXPRES', 20000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF18</div>
+                        <div class="product-name">EXAMEN PSICOFÍSICO INTEGRAL NP EXPRES</div>
+                        <div class="product-price">$20,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF18', this.value)">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cursos de Capacitación -->
+                <div class="service-category">
+                  <div class="category-header" onclick="toggleCategory('capacitacion')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      🎓
+                      <span>Cursos de Capacitación</span>
+                    </div>
+                    <span class="category-arrow">⬇️</span>
+                  </div>
+                  <div class="category-content" id="capacitacionContent">
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF03', 'CONSTANCIA DE CURSO DE CAPACITACIÓN CAT A', 1000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF03</div>
+                        <div class="product-name">CONSTANCIA DE CURSO DE CAPACITACIÓN CAT A</div>
+                        <div class="product-price">$1,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF03', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF04', 'CONSTANCIA DE CURSO DE CAPACITACIÓN CAT B', 1000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF04</div>
+                        <div class="product-name">CONSTANCIA DE CURSO DE CAPACITACIÓN CAT B</div>
+                        <div class="product-price">$1,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF04', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF05', 'CONSTANCIA DE CURSO DE CAPACITACIÓN CAT E MyRP', 1500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF05</div>
+                        <div class="product-name">CONSTANCIA DE CURSO DE CAPACITACIÓN CAT E MyRP</div>
+                        <div class="product-price">$1,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF05', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF06', 'CONSTANCIA DE CURSO DE CAPACITACIÓN CAT E DA', 1500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF06</div>
+                        <div class="product-name">CONSTANCIA DE CURSO DE CAPACITACIÓN CAT E DA</div>
+                        <div class="product-price">$1,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF06', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF07', 'CONSTANCIA DE CURSO DE CAPACITACIÓN CAT F', 1000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF07</div>
+                        <div class="product-name">CONSTANCIA DE CURSO DE CAPACITACIÓN CAT F</div>
+                        <div class="product-price">$1,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF07', this.value)">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Licencias Federales Digitales -->
+                <div class="service-category">
+                  <div class="category-header" onclick="toggleCategory('licencias')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      🏅
+                      <span>Licencias Federales Digitales</span>
+                    </div>
+                    <span class="category-arrow">⬇️</span>
+                  </div>
+                  <div class="category-content" id="licenciasContent">
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF08', 'PAGO DE DERECHOS', 205, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF08</div>
+                        <div class="product-name">PAGO DE DERECHOS</div>
+                        <div class="product-price">$205.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF08', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF09', 'DIGITALIZACIÓN LICENCIA FEDERAL', 295, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF09</div>
+                        <div class="product-name">DIGITALIZACIÓN LICENCIA FEDERAL</div>
+                        <div class="product-price">$295.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF09', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF10', 'LICENCIA FEDERAL DIGITAL INTERNACIONAL', 1500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF10</div>
+                        <div class="product-name">LICENCIA FEDERAL DIGITAL INTERNACIONAL</div>
+                        <div class="product-price">$1,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF10', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF11', 'LICENCIA FEDERAL DIGITAL 1 CATEGORÍA A, B, F', 1500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF11</div>
+                        <div class="product-name">LICENCIA FEDERAL DIGITAL 1 CATEGORÍA A, B, F</div>
+                        <div class="product-price">$1,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF11', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF12', 'LICENCIA FEDERAL DIGITAL 1 CATEGORÍA E MyRP', 2000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF12</div>
+                        <div class="product-name">LICENCIA FEDERAL DIGITAL 1 CATEGORÍA E MyRP</div>
+                        <div class="product-price">$2,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF12', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF13', 'LICENCIA FEDERAL DIGITAL 1 CATEGORÍA E DA', 2000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF13</div>
+                        <div class="product-name">LICENCIA FEDERAL DIGITAL 1 CATEGORÍA E DA</div>
+                        <div class="product-price">$2,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF13', this.value)">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Servicios Adicionales -->
+                <div class="service-category">
+                  <div class="category-header" onclick="toggleCategory('adicionales')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      ⚙️
+                      <span>Servicios Adicionales</span>
+                    </div>
+                    <span class="category-arrow">⬇️</span>
+                  </div>
+                  <div class="category-content" id="adicionalesContent">
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF14', 'ADICIÓN O CAMBIO DE CATEGORÍA CAT A, B y F', 1500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF14</div>
+                        <div class="product-name">ADICIÓN O CAMBIO DE CATEGORÍA CAT A, B y F</div>
+                        <div class="product-price">$1,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF14', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF15', 'ADICIÓN O CAMBIO DE CATEGORÍA CAT E MyRP', 2000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF15</div>
+                        <div class="product-name">ADICIÓN O CAMBIO DE CATEGORÍA CAT E MyRP</div>
+                        <div class="product-price">$2,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF15', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF16', 'ADICIÓN O CAMBIO DE CATEGORÍA CAT E DA', 2000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF16</div>
+                        <div class="product-name">ADICIÓN O CAMBIO DE CATEGORÍA CAT E DA</div>
+                        <div class="product-price">$2,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF16', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF19', 'LOGÍSTICA Y GASTOS ADICIONALES (TERRESTRE)', 2000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF19</div>
+                        <div class="product-name">LOGÍSTICA Y GASTOS ADICIONALES (TERRESTRE)</div>
+                        <div class="product-price">$2,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF19', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF20', 'LOGÍSTICA Y GASTOS ADICIONALES (AÉREO) NACIONAL FORÁNEO', 5000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF20</div>
+                        <div class="product-name">LOGÍSTICA Y GASTOS ADICIONALES (AÉREO) NACIONAL FORÁNEO</div>
+                        <div class="product-price">$5,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF20', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF21', 'DICTAMEN NO APTO INCLUYE COSTOS OPERATIVOS', 12500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF21</div>
+                        <div class="product-name">DICTAMEN NO APTO INCLUYE COSTOS OPERATIVOS</div>
+                        <div class="product-price">$12,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF21', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF22', 'PENALIZACIÓN POR PAGO TARDÍO CADA UNO', 700, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF22</div>
+                        <div class="product-name">PENALIZACIÓN POR PAGO TARDÍO CADA UNO</div>
+                        <div class="product-price">$700.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF22', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF23', 'PENALIZACIÓN POR NO ASISTENCIA AL EXAMEN MÉDICO', 1000, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF23</div>
+                        <div class="product-name">PENALIZACIÓN POR NO ASISTENCIA AL EXAMEN MÉDICO</div>
+                        <div class="product-price">$1,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF23', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('CF24', 'REAGENDAR CITA MÉDICA', 500, this)">
+                      <div class="product-info">
+                        <div class="product-code">CF24</div>
+                        <div class="product-name">REAGENDAR CITA MÉDICA</div>
+                        <div class="product-price">$500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('CF24', this.value)">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Paquetes Especiales -->
+                <div class="service-category">
+                  <div class="category-header" onclick="toggleCategory('paquetes')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      📦
+                      <span>Paquetes Especiales</span>
+                    </div>
+                    <span class="category-arrow">⬇️</span>
+                  </div>
+                  <div class="category-content" id="paquetesContent">
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('PK01', 'COTIZACIÓN LFD SCT (Incluye CF01, CF04, CF08, CF09)', 5000, this)">
+                      <div class="product-info">
+                        <div class="product-code">PK01</div>
+                        <div class="product-name">COTIZACIÓN LFD SCT (Incluye CF01, CF04, CF08, CF09)</div>
+                        <div class="product-price">$5,000.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('PK01', this.value)">
+                    </div>
+                    
+                    <div class="product-item">
+                      <input type="checkbox" class="product-checkbox" onchange="toggleProduct('PK02', 'COTIZACIÓN LFD TERCEROS AUTORIZADOS (Incluye CF04, CF05, CF08, CF09, CF15, CF19)', 10500, this)">
+                      <div class="product-info">
+                        <div class="product-code">PK02</div>
+                        <div class="product-name">COTIZACIÓN LFD TERCEROS AUTORIZADOS (Incluye CF04, CF05, CF08, CF09, CF15, CF19)</div>
+                        <div class="product-price">$10,500.00</div>
+                      </div>
+                      <input type="number" class="quantity-input" value="1" min="1" onchange="updateQuantity('PK02', this.value)">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Total Button -->
+        <div class="floating-total" id="floatingTotal" style="display: none;">
+          <div class="total-info">
+            <span class="total-label">Total:</span>
+            <span class="total-amount" id="totalAmount">$0</span>
+          </div>
+          <button class="btn-primary" onclick="showQuotationModal()">
+            Finalizar Cotización
+          </button>
+        </div>
+
+        <!-- Modal de Confirmación -->
+        <div id="quotationModal" class="modal-overlay" style="display: none;">
+          <div class="modal-container">
+            <div class="modal-header">
+              <h2>Resumen de Cotización</h2>
+              <button class="modal-close" onclick="closeQuotationModal()">
+                ✕
+              </button>
+            </div>
+            
+            <div class="modal-content">
+              <!-- Lista de productos seleccionados -->
+              <div class="selected-products-section">
+                <h3>Productos Seleccionados:</h3>
+                <div id="selectedProductsList" class="products-list">
+                  <!-- Se llenará dinámicamente -->
+                </div>
+                <div class="total-display">
+                  <strong>Total: <span id="modalTotal">$0</span></strong>
+                </div>
+              </div>
+
+              <!-- Información de Salud -->
+              <div class="health-policy-section">
+                <h3>Información de Salud Requerida</h3>
+                <div class="health-info-card">
+                  <div class="health-intro">
+                    <p>Para procesar tu examen psicofísico correctamente, necesitamos conocer tu situación de salud actual.</p>
+                  </div>
+                  
+                  <div class="health-checklist">
+                    <h4>Selecciona las condiciones que aplican:</h4>
+                    <div class="conditions-grid">
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="medicamentos" name="healthConditions" value="medicamentos">
+                        <span class="condition-text">💊 Medicamentos</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="vista" name="healthConditions" value="vista">
+                        <span class="condition-text">👁️ Problemas de vista</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="dental" name="healthConditions" value="dental">
+                        <span class="condition-text">🦷 Problemas dentales</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="cardiaco" name="healthConditions" value="cardiaco">
+                        <span class="condition-text">❤️ Problemas cardíacos</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="diabetes" name="healthConditions" value="diabetes">
+                        <span class="condition-text">🩸 Diabetes</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="colesterol" name="healthConditions" value="colesterol">
+                        <span class="condition-text">🧈 Colesterol alto</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="sobrepeso" name="healthConditions" value="sobrepeso">
+                        <span class="condition-text">⚖️ Sobrepeso</span>
+                      </label>
+                      <label class="condition-checkbox">
+                        <input type="checkbox" id="otros" name="healthConditions" value="otros" onchange="toggleOtherHealthField()">
+                        <span class="condition-text">🩺 Otras enfermedades</span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div class="health-situation" id="healthSituationDiv" style="display: none;">
+                    <label for="healthSituation" class="input-label">Describe otras enfermedades o condiciones:</label>
+                    <textarea id="healthSituation" class="form-textarea" rows="4" placeholder="Describe cualquier otra condición médica no mencionada arriba..."></textarea>
+                  </div>
+                  
+                  <div class="health-acceptance">
+                    <label class="checkbox-container">
+                      <input type="checkbox" id="acceptHealthPolicy" required>
+                      <span class="checkmark"></span>
+                      <span class="checkbox-text"><strong>Declaro que la información proporcionada es veraz y completa</strong></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botones de acción -->
+              <div class="modal-actions">
+                <button class="btn-secondary" onclick="downloadPDF()">
+                  Descargar Cotización
+                </button>
+                <button class="btn-primary" onclick="consultWhatsApp()">
+                  <img src="wlogo.png" alt="WhatsApp" style="width: 32px; height: 32px; margin-right: 8px;">
+                  Consultar por WhatsApp
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section section fade-in-section" id="contacto">
+      <div class="section-container">
+        <div class="section-header scale-in">
+          <h2 class="section-title">Contacto</h2>
+          <p class="section-subtitle">Estamos aquí para ayudarte con cualquier consulta o solicitud</p>
+        </div>
+        
+        <div class="contact-grid">
+          <!-- Contact Information -->
+          <div class="contact-info slide-in-left">
+            <h3 class="contact-title">Información de Contacto</h3>
+            <div class="contact-items">
+              <div class="contact-item">
+                📧
+                <div>
+                  <div class="contact-label">Email</div>
+                  <div class="contact-value">consultoriadamex@gmail.com</div>
+                </div>
+              </div>
+              <div class="contact-item">
+                📞
+                <div>
+                  <div class="contact-label">Teléfono</div>
+                  <div class="contact-value">55 2505 1252</div>
+                </div>
+              </div>
+              <div class="contact-item">
+                🕒
+                <div>
+                  <div class="contact-label">Horario</div>
+                  <div class="contact-value">Lunes a Viernes 9:00 AM - 6:00 PM</div>
+                </div>
+              </div>
+              <div class="contact-item">
+                📍
+                <div>
+                  <div class="contact-label">Ubicación</div>
+                  <div class="contact-value">Ciudad de México, México</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Contact Buttons with Official Logos -->
+            <div class="contact-buttons">
+              <button class="contact-btn whatsapp-btn" onclick="contactWhatsApp()">
+                <img src="wlogo.png" alt="WhatsApp" style="width: 36px; height: 36px; margin-right: 8px;">
+                WhatsApp
+              </button>
+              <button class="contact-btn gmail-btn" onclick="contactEmail()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h.273L12 10.186l10.091-6.365h.273c.904 0 1.636.732 1.636 1.636z"/>
+                </svg>
+                Gmail
+                <span>Gmail</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="contact-form-section slide-in-right">
+            <h3 class="contact-title">Envíanos un Mensaje</h3>
+            <form class="contact-form" onsubmit="sendContactForm(event)">
+              <div class="form-row">
+                <div class="input-group">
+                  <label class="input-label">Nombre Completo *</label>
+                  <input type="text" id="contactNombre" class="form-input" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Email *</label>
+                  <input type="email" id="contactEmail" class="form-input" required>
+                </div>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Teléfono</label>
+                <input type="tel" id="contactTelefono" class="form-input">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Mensaje *</label>
+                <textarea id="contactMensaje" class="form-textarea" rows="4" required placeholder="Cuéntanos cómo podemos ayudarte..."></textarea>
+              </div>
+              <button type="submit" class="btn-primary submit-btn">
+                ℹ️
+                Enviar Mensaje
+              </button>
+            </form>
+            
+            <!-- Privacy Notice -->
+            <div class="privacy-notice">
+              <p>Al enviar este formulario, aceptas nuestro <a href="#" onclick="showPrivacyModal()">Aviso de Privacidad</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-container">
+      <a href="#inicio" class="mobile-nav-item active" onclick="navigateToSection('inicio')">
+        🏠
+        <span>Inicio</span>
+      </a>
+      <a href="#servicios" class="mobile-nav-item" onclick="navigateToSection('servicios')">
+        🏥
+        <span>Servicios</span>
+      </a>
+      <a href="#cotizaciones" class="mobile-nav-item" onclick="navigateToSection('cotizaciones')">
+        🧮
+        <span>Cotizar</span>
+      </a>
+      <a href="#contacto" class="mobile-nav-item" onclick="navigateToSection('contacto')">
+        📧
+        <span>Contacto</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    // Global variables
+    let currentSection = 'inicio';
+    let selectedServices = [];
+    let totalCost = 0;
+
+    // Products database - Productos completos de test_final.html
+    const productsDatabase = {
+      examenes: {
+        title: "Exámenes Psicofísicos",
+        icon: "medical_services",
+        products: [
+          { code: "CF01", name: "EXAMEN PSICOFÍSICO INTEGRAL SCT PRESENCIAL", price: 3500 },
+          { code: "CF02", name: "EXAMEN PSICOFÍSICO INTEGRAL TERCEROS AUTORIZADOS PRESENCIAL", price: 5500 },
+          { code: "CF17", name: "EXAMEN PSICOFÍSICO INTEGRAL NP", price: 16000 },
+          { code: "CF18", name: "EXAMEN PSICOFÍSICO INTEGRAL NP EXPRES", price: 20000 }
+        ]
+      },
+      capacitacion: {
+        title: "Cursos de Capacitación",
+        icon: "school",
+        products: [
+          { code: "CF03", name: "CONSTANCIA DE CURSO DE CAPACITACIÓN CAT A", price: 1000 },
+          { code: "CF04", name: "CONSTANCIA DE CURSO DE CAPACITACIÓN CAT B", price: 1000 },
+          { code: "CF05", name: "CONSTANCIA DE CURSO DE CAPACITACIÓN CAT E MyRP", price: 1500 },
+          { code: "CF06", name: "CONSTANCIA DE CURSO DE CAPACITACIÓN CAT E DA", price: 1500 },
+          { code: "CF07", name: "CONSTANCIA DE CURSO DE CAPACITACIÓN CAT F", price: 1000 }
+        ]
+      },
+      licencias: {
+        title: "Licencias Federales Digitales",
+        icon: "badge",
+        products: [
+          { code: "CF08", name: "PAGO DE DERECHOS", price: 205 },
+          { code: "CF09", name: "DIGITALIZACIÓN LICENCIA FEDERAL", price: 295 },
+          { code: "CF10", name: "LICENCIA FEDERAL DIGITAL INTERNACIONAL", price: 1500 },
+          { code: "CF11", name: "LICENCIA FEDERAL DIGITAL 1 CATEGORÍA A, B, F", price: 1500 },
+          { code: "CF12", name: "LICENCIA FEDERAL DIGITAL 1 CATEGORÍA E MyRP", price: 2000 },
+          { code: "CF13", name: "LICENCIA FEDERAL DIGITAL 1 CATEGORÍA E DA", price: 2000 }
+        ]
+      },
+      adicionales: {
+        title: "Servicios Adicionales",
+        icon: "settings",
+        products: [
+          { code: "CF14", name: "ADICIÓN O CAMBIO DE CATEGORÍA CAT A, B y F", price: 1500 },
+          { code: "CF15", name: "ADICIÓN O CAMBIO DE CATEGORÍA CAT E MyRP", price: 2000 },
+          { code: "CF16", name: "ADICIÓN O CAMBIO DE CATEGORÍA CAT E DA", price: 2000 },
+          { code: "CF19", name: "LOGÍSTICA Y GASTOS ADICIONALES (TERRESTRE)", price: 2000 },
+          { code: "CF20", name: "LOGÍSTICA Y GASTOS ADICIONALES (AÉREO) NACIONAL FORÁNEO", price: 5000 },
+          { code: "CF21", name: "DICTAMEN NO APTO INCLUYE COSTOS OPERATIVOS", price: 12500 },
+          { code: "CF22", name: "PENALIZACIÓN POR PAGO TARDÍO CADA UNO", price: 700 },
+          { code: "CF23", name: "PENALIZACIÓN POR NO ASISTENCIA AL EXAMEN MÉDICO", price: 1000 },
+          { code: "CF24", name: "REAGENDAR CITA MÉDICA", price: 500 }
+        ]
+      },
+      paquetes: {
+        title: "Paquetes Especiales",
+        icon: "inventory",
+        products: [
+          { code: "PK01", name: "COTIZACIÓN LFD SCT (Incluye CF01, CF04, CF08, CF09)", price: 5000 },
+          { code: "PK02", name: "COTIZACIÓN LFD TERCEROS AUTORIZADOS (Incluye CF04, CF05, CF08, CF09, CF15, CF19)", price: 10500 }
+        ]
+      }
+    };
+
+    // Navigation function
+    function navigateToSection(sectionId) {
+      currentSection = sectionId;
+      updateNavigationState(sectionId);
+      
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+
+    // Update navigation active states
+    function updateNavigationState(activeSection) {
+      // Update desktop navigation
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + activeSection) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Update mobile navigation
+      const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+      mobileNavItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + activeSection) {
+          item.classList.add('active');
+        }
+      });
+    }
+
+    // Mobile menu toggle (for future hamburger functionality)
+    function toggleMobileMenu() {
+      // Future implementation for hamburger menu if needed
+      console.log('Mobile menu toggle');
+    }
+
+    // Tab switching functionality
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName + 'Tab').classList.add('active');
+    }
+
+    // Continue to services tab
+    function continueToServices() {
+      const nombre = document.getElementById('nombreCliente').value;
+      const email = document.getElementById('emailCliente').value;
+
+      if (!nombre || !email) {
+        alert('Por favor completa tu nombre y email para continuar');
+        return;
+      }
+
+      switchTab('servicios');
+    }
+
+    // Load services categories
+    function loadServicesCategories() {
+      const container = document.getElementById('servicesCategories');
+      container.innerHTML = '';
+
+      Object.keys(productsDatabase).forEach(categoryKey => {
+        const category = productsDatabase[categoryKey];
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'service-category';
+        categoryDiv.innerHTML = `
+          <div class="category-header" onclick="toggleCategory('${categoryKey}')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              ${category.icon}
+              <span>${category.title}</span>
+            </div>
+            <span class="category-arrow">⬇️</span>
+          </div>
+          <div class="category-content" id="${categoryKey}Content">
+            ${category.products.map(product => `
+              <div class="product-item">
+                <input type="checkbox" class="product-checkbox" 
+                       onchange="toggleProduct('${product.code}', '${product.name}', ${product.price}, this)">
+                <div class="product-info">
+                  <div class="product-code">${product.code}</div>
+                  <div class="product-name">${product.name}</div>
+                  <div class="product-price">$${product.price.toLocaleString()}</div>
+                </div>
+                <input type="number" class="quantity-input" value="1" min="1" 
+                       onchange="updateQuantity('${product.code}', this.value)">
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(categoryDiv);
+      });
+    }
+
+    // Toggle category expansion
+    function toggleCategory(categoryKey) {
+      const content = document.getElementById(categoryKey + 'Content');
+      const header = content.previousElementSibling;
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        header.classList.remove('expanded');
+        content.style.display = 'none';
+      } else {
+        content.classList.add('expanded');
+        header.classList.add('expanded');
+        content.style.display = 'block';
+      }
+    }
+
+    // Toggle product selection
+    function toggleProduct(code, name, price, checkbox) {
+      if (checkbox.checked) {
+        selectedServices.push({
+          code: code,
+          name: name,
+          price: price,
+          quantity: 1
+        });
+      } else {
+        selectedServices = selectedServices.filter(service => service.code !== code);
+      }
+      updateTotal();
+    }
+
+    // Update product quantity
+    function updateQuantity(code, quantity) {
+      const service = selectedServices.find(s => s.code === code);
+      if (service) {
+        service.quantity = parseInt(quantity);
+        updateTotal();
+      }
+    }
+
+    // Update total cost
+    function updateTotal() {
+      totalCost = selectedServices.reduce((sum, service) => {
+        return sum + (service.price * service.quantity);
+      }, 0);
+      
+      const totalElement = document.getElementById('totalAmount');
+      const floatingTotal = document.getElementById('floatingTotal');
+      
+      if (totalElement) {
+        totalElement.textContent = `$${totalCost.toLocaleString()}`;
+      }
+      
+      if (floatingTotal) {
+        if (selectedServices.length > 0) {
+          floatingTotal.style.display = 'flex';
+        } else {
+          floatingTotal.style.display = 'none';
+        }
+      }
+    }
+
+    // Show quotation modal
+    function showQuotationModal() {
+      if (selectedServices.length === 0) {
+        alert('Por favor selecciona al menos un servicio antes de continuar');
+        return;
+      }
+      
+      updateModalProductsList();
+      const modal = document.getElementById('quotationModal');
+      
+      if (modal) {
+        modal.classList.add('show');
+        
+        // Auto scroll to modal
+        setTimeout(() => {
+          modal.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }, 100);
+      }
+    }
+
+    function updateModalProductsList() {
+      const productsList = document.getElementById('selectedProductsList');
+      const modalTotal = document.getElementById('modalTotal');
+      
+      // Clear previous content
+      productsList.innerHTML = '';
+      
+      // Add selected products
+      selectedServices.forEach(service => {
+        const subtotal = service.price * service.quantity;
+        const productDiv = document.createElement('div');
+        productDiv.className = 'product-item-modal';
+        productDiv.innerHTML = `
+          <div class="product-info-modal">
+            <div class="product-code-modal">${service.code}</div>
+            <div class="product-name-modal">${service.name}</div>
+            <div class="product-price-modal">$${service.price.toLocaleString()} x ${service.quantity} = $${subtotal.toLocaleString()}</div>
+          </div>
+        `;
+        productsList.appendChild(productDiv);
+      });
+      
+      // Update total
+      modalTotal.textContent = `$${totalCost.toLocaleString()}`;
+    }
+
+    // Close quotation modal
+    function closeQuotationModal() {
+      const modal = document.getElementById('quotationModal');
+      modal.classList.remove('show');
+    }
+
+    // Validate required fields
+    function validateRequiredFields() {
+      const nombre = document.getElementById('nombreCliente')?.value?.trim();
+      const email = document.getElementById('emailCliente')?.value?.trim();
+      const acceptHealthPolicy = document.getElementById('acceptHealthPolicy')?.checked;
+      
+      if (!nombre) {
+        alert('Por favor completa tu nombre en la sección de datos personales');
+        return false;
+      }
+      
+      if (!email) {
+        alert('Por favor completa tu correo electrónico en la sección de datos personales');
+        return false;
+      }
+      
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Por favor ingresa un correo electrónico válido');
+        return false;
+      }
+      
+      if (!acceptHealthPolicy) {
+        alert('Debes confirmar que la información de salud proporcionada es veraz');
+        return false;
+      }
+      
+      return true;
+    }
+
+    // Download PDF function
+    function downloadPDF() {
+      if (!validateRequiredFields()) {
+        return;
+      }
+      
+      try {
+        // Check if jsPDF is loaded
+        if (typeof window.jspdf === 'undefined') {
+          alert('Error: Librería PDF no cargada. Recarga la página e intenta de nuevo.');
+          return;
+        }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Add DAMEX branding colors and style
+        doc.setFillColor(21, 101, 192); // DAMEX blue
+        doc.rect(0, 0, 210, 25, 'F');
+        
+        // Header with white text
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(18);
+        doc.setFont(undefined, 'bold');
+        doc.text('DAMEX TRANSPORTS', 20, 16);
+        doc.setFontSize(12);
+        doc.text('Logistica Federal Digital', 130, 16);
+        
+        // Reset text color
+        doc.setTextColor(0, 0, 0);
+        
+        // Client info section with blue accent
+        doc.setFillColor(209, 228, 255); // Light blue
+        doc.rect(15, 35, 180, 35, 'F');
+        
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('INFORMACION DEL CLIENTE', 20, 45);
+        
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'normal');
+        let yPos = 55;
+        
+        doc.text(`Cliente: ${document.getElementById('nombreCliente').value}`, 20, yPos);
+        yPos += 8;
+        doc.text(`Email: ${document.getElementById('emailCliente').value}`, 20, yPos);
+        yPos += 8;
+        doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 20, yPos);
+        yPos += 20;
+        
+        // Products section with styled background
+        doc.setFillColor(245, 245, 245); // Light gray
+        doc.rect(15, yPos - 5, 180, 10 + (selectedServices.length * 15), 'F');
+        
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text('PRODUCTOS SELECCIONADOS', 20, yPos);
+        yPos += 12;
+        
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'normal');
+        selectedServices.forEach(service => {
+          const subtotal = service.price * service.quantity;
+          doc.setFont(undefined, 'bold');
+          doc.text(`${service.code}`, 20, yPos);
+          doc.setFont(undefined, 'normal');
+          doc.text(`${service.name}`, 45, yPos);
+          doc.text(`$${service.price.toLocaleString()} x ${service.quantity}`, 140, yPos);
+          doc.setFont(undefined, 'bold');
+          doc.text(`$${subtotal.toLocaleString()}`, 170, yPos);
+          yPos += 8;
+        });
+        
+        // Total section with blue background
+        yPos += 10;
+        doc.setFillColor(21, 101, 192);
+        doc.rect(15, yPos - 5, 180, 15, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text(`TOTAL: $${totalCost.toLocaleString()}`, 20, yPos + 5);
+        doc.setTextColor(0, 0, 0);
+        yPos += 25;
+        
+        // Selected health conditions
+        const selectedConditions = [];
+        const healthCheckboxes = document.querySelectorAll('input[name="healthConditions"]:checked');
+        
+        healthCheckboxes.forEach(checkbox => {
+          const conditionMap = {
+            'medicamentos': 'Medicamentos',
+            'vista': 'Problemas de vista',
+            'dental': 'Problemas dentales',
+            'cardiaco': 'Problemas cardiacos',
+            'diabetes': 'Diabetes',
+            'colesterol': 'Colesterol alto',
+            'sobrepeso': 'Sobrepeso',
+            'otros': 'Otras enfermedades'
+          };
+          selectedConditions.push(conditionMap[checkbox.value] || checkbox.value);
+        });
+        
+        if (selectedConditions.length > 0) {
+          doc.setFontSize(12);
+          doc.setFont(undefined, 'bold');
+          doc.text('CONDICIONES DE SALUD DECLARADAS:', 20, yPos);
+          yPos += 10;
+          
+          doc.setFont(undefined, 'normal');
+          selectedConditions.forEach(condition => {
+            doc.text(`• ${condition}`, 25, yPos);
+            yPos += 7;
+          });
+          yPos += 5;
+        }
+        
+        // Other health details if provided
+        const healthSituation = document.getElementById('healthSituation').value;
+        if (healthSituation.trim()) {
+          doc.setFont(undefined, 'bold');
+          doc.text('DETALLES ADICIONALES:', 20, yPos);
+          yPos += 10;
+          
+          doc.setFont(undefined, 'normal');
+          const lines = doc.splitTextToSize(healthSituation, 170);
+          doc.text(lines, 20, yPos);
+          yPos += lines.length * 7 + 10;
+        }
+        
+        // Footer
+        yPos += 10;
+        doc.setFontSize(10);
+        doc.text('DAMEX Transports - Logistica Federal Digital', 20, yPos);
+        doc.text('Tel: 55 2505 1252 | Email: consultoriadamex@gmail.com', 20, yPos + 7);
+        
+        // Save PDF
+        const fileName = `Cotizacion_DAMEX_${new Date().toLocaleDateString('es-MX').replace(/\//g, '-')}.pdf`;
+        doc.save(fileName);
+        
+        alert('PDF descargado exitosamente');
+        closeQuotationModal();
+        clearAllData();
+        switchTab('informacion');
+        
+      } catch (error) {
+        console.error('Error al generar PDF:', error);
+        alert('Error al generar el PDF. Inténtalo de nuevo.');
+      }
+    }
+
+    // Toggle other health field visibility
+    function toggleOtherHealthField() {
+      const otrosCheckbox = document.getElementById('otros');
+      const healthSituationDiv = document.getElementById('healthSituationDiv');
+      
+      if (otrosCheckbox.checked) {
+        healthSituationDiv.style.display = 'block';
+      } else {
+        healthSituationDiv.style.display = 'none';
+        document.getElementById('healthSituation').value = '';
+      }
+    }
+
+    // WhatsApp consultation function
+    function consultWhatsApp() {
+      if (!validateRequiredFields()) {
+        return;
+      }
+      
+      try {
+        const nombre = document.getElementById('nombreCliente').value;
+        const email = document.getElementById('emailCliente').value;
+        const telefono = document.getElementById('telefonoCliente').value;
+        const empresa = document.getElementById('empresaCliente').value;
+        
+        let message = `¡Hola! Soy *${nombre}* y me interesa cotizar servicios de DAMEX Transports.\n\n`;
+        message += `*DATOS DE CONTACTO:*\n`;
+        message += `• Email: ${email}\n`;
+        if (telefono.trim()) {
+          message += `• Teléfono: ${telefono}\n`;
+        }
+        if (empresa.trim()) {
+          message += `• Empresa: ${empresa}\n`;
+        }
+        message += `• Fecha: ${new Date().toLocaleDateString('es-MX')}\n\n`;
+        
+        message += `*PRODUCTOS QUE ME INTERESAN:*\n`;
+        message += `${'─'.repeat(35)}\n`;
+        
+        selectedServices.forEach(service => {
+          const subtotal = service.price * service.quantity;
+          message += `• ${service.code} - ${service.name}\n`;
+          message += `  $${service.price.toLocaleString()} x ${service.quantity} = $${subtotal.toLocaleString()}\n\n`;
+        });
+        
+        message += `${'─'.repeat(35)}\n`;
+        message += `*TOTAL ESTIMADO: $${totalCost.toLocaleString()}*\n\n`;
+        
+        // Add selected health conditions
+        const selectedConditions = [];
+        const healthCheckboxes = document.querySelectorAll('input[name="healthConditions"]:checked');
+        
+        healthCheckboxes.forEach(checkbox => {
+          const conditionMap = {
+            'medicamentos': 'Medicamentos',
+            'vista': 'Problemas de vista',
+            'dental': 'Problemas dentales',
+            'cardiaco': 'Problemas cardíacos',
+            'diabetes': 'Diabetes',
+            'colesterol': 'Colesterol alto',
+            'sobrepeso': 'Sobrepeso',
+            'otros': 'Otras enfermedades'
+          };
+          selectedConditions.push(conditionMap[checkbox.value] || checkbox.value);
+        });
+        
+        if (selectedConditions.length > 0) {
+          message += `*MIS CONDICIONES DE SALUD:*\n`;
+          selectedConditions.forEach(condition => {
+            message += `• ${condition}\n`;
+          });
+          message += `\n`;
+        }
+        
+        // Add additional health details if provided
+        const healthSituation = document.getElementById('healthSituation').value;
+        if (healthSituation.trim()) {
+          message += `*DETALLES ADICIONALES DE SALUD:*\n${healthSituation}\n\n`;
+        }
+        
+        message += `*Necesito más información sobre:*\n`;
+        message += `• Proceso y requisitos\n`;
+        message += `• Disponibilidad de fechas\n`;
+        message += `• Formas de pago\n`;
+        message += `• Cualquier detalle adicional\n\n`;
+        
+        message += `¿Podrían contactarme para finalizar mi cotización?\n\n`;
+        message += `¡Gracias por su atención! 😊`;
+        
+        const phoneNumber = '5525051252';
+        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        
+        window.open(whatsappURL, '_blank');
+        alert('Redirigiendo a WhatsApp para consultar...');
+        
+        closeQuotationModal();
+        clearAllData();
+        switchTab('informacion');
+        
+      } catch (error) {
+        console.error('Error al generar mensaje de WhatsApp:', error);
+        alert('Error al generar el mensaje. Inténtalo de nuevo.');
+      }
+    }
+
+    // Clear all form data
+    function clearAllData() {
+      // Clear client information
+      document.getElementById('nombreCliente').value = '';
+      document.getElementById('emailCliente').value = '';
+      document.getElementById('empresaCliente').value = '';
+      document.getElementById('telefonoCliente').value = '';
+      
+      // Clear health conditions checkboxes
+      const healthCheckboxes = document.querySelectorAll('input[name="healthConditions"]');
+      healthCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      // Clear health situation textarea and hide it
+      document.getElementById('healthSituation').value = '';
+      document.getElementById('healthSituationDiv').style.display = 'none';
+      
+      // Clear health acceptance checkbox
+      document.getElementById('acceptHealthPolicy').checked = false;
+      
+      // Clear all product selections
+      const productCheckboxes = document.querySelectorAll('.product-checkbox');
+      productCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      // Clear quantities
+      const quantityInputs = document.querySelectorAll('.quantity-input');
+      quantityInputs.forEach(input => {
+        input.value = 1;
+      });
+      
+      // Reset selected services and totals
+      selectedServices = [];
+      totalCost = 0;
+      
+      // Hide floating total button
+      document.getElementById('floatingTotal').style.display = 'none';
+      
+      // Update displays
+      document.getElementById('totalAmount').textContent = '$0';
+      document.getElementById('modalTotal').textContent = '$0';
+    }
+
+    // Contact functions
+    function contactWhatsApp() {
+      const message = "Hola, me interesa conocer más sobre los servicios de DAMEX Transports. ¿Podrían proporcionarme información?";
+      const whatsappUrl = `https://wa.me/5525051252?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    function contactEmail() {
+      const subject = "Consulta sobre servicios DAMEX Transports";
+      const body = "Estimado equipo de DAMEX,\n\nMe interesa conocer más información sobre sus servicios de logística federal.\n\nQuedo atento a su respuesta.\n\nSaludos cordiales.";
+      const gmailUrl = `mailto:consultoriadamex@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(gmailUrl, '_blank');
+    }
+
+    // Send contact form
+    function sendContactForm(event) {
+      event.preventDefault();
+      
+      const nombre = document.getElementById('contactNombre').value;
+      const email = document.getElementById('contactEmail').value;
+      const telefono = document.getElementById('contactTelefono').value;
+      const mensaje = document.getElementById('contactMensaje').value;
+
+      let whatsappMessage = `*MENSAJE DE CONTACTO - DAMEX*\n\n`;
+      whatsappMessage += `*Nombre:* ${nombre}\n`;
+      whatsappMessage += `*Email:* ${email}\n`;
+      if (telefono) whatsappMessage += `*Teléfono:* ${telefono}\n`;
+      whatsappMessage += `\n*Mensaje:*\n${mensaje}`;
+
+      const whatsappUrl = `https://wa.me/5525051252?text=${encodeURIComponent(whatsappMessage)}`;
+      window.open(whatsappUrl, '_blank');
+
+      // Reset form
+      document.getElementById('contactNombre').value = '';
+      document.getElementById('contactEmail').value = '';
+      document.getElementById('contactTelefono').value = '';
+      document.getElementById('contactMensaje').value = '';
+
+      alert('Mensaje enviado. Te redirigimos a WhatsApp para completar el envío.');
+    }
+
+    // Show privacy modal
+    function showPrivacyModal() {
+      alert(`AVISO DE PRIVACIDAD - DAMEX TRANSPORTS
+
+RESPONSABLE: DAMEX Transports
+DOMICILIO: Ciudad de México, México
+CORREO: consultoriadamex@gmail.com
+
+FINALIDADES:
+- Proporcionar servicios de logística federal
+- Procesar exámenes psicofísicos
+- Gestionar licencias federales
+- Brindar capacitación especializada
+- Comunicación comercial
+
+DATOS PERSONALES RECABADOS:
+- Datos de identificación
+- Datos de contacto
+- Información médica (para exámenes)
+- Datos laborales
+
+DERECHOS ARCO:
+Usted tiene derecho a Acceder, Rectificar, Cancelar u Oponerse al tratamiento de sus datos personales.
+
+Para ejercer sus derechos, contacte: consultoriadamex@gmail.com
+
+Este aviso puede ser modificado. La versión vigente estará disponible en nuestro sitio web.`);
+    }
+
+    // Header scroll effect and section highlighting
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+      
+      // Update active section based on scroll position
+      updateActiveSection();
+    });
+
+    // Update active section based on scroll position
+    function updateActiveSection() {
+      const sections = ['inicio', 'servicios', 'cotizaciones', 'contacto'];
+      const scrollPosition = window.scrollY + 100; // Offset for header
+      
+      let activeSection = 'inicio';
+      
+      sections.forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+          
+          if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            activeSection = sectionId;
+          }
+        }
+      });
+      
+      // Update navigation if section changed
+      if (currentSection !== activeSection) {
+        currentSection = activeSection;
+        updateNavigationState(activeSection);
+      }
+    }
+
+    // Scroll animations
+    function initScrollAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, observerOptions);
+      
+      // Observe all animated elements
+      document.querySelectorAll('.fade-in-section, .slide-in-left, .slide-in-right, .scale-in').forEach(el => {
+        observer.observe(el);
+      });
+    }
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Force scroll to top on page load
+      window.scrollTo(0, 0);
+      
+      updateNavigationState('inicio');
+      
+      // Initialize scroll animations
+      initScrollAnimations();
+      
+      // Add touch event optimizations for mobile
+      if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+      }
+    });
+    
+    // Prevent automatic scroll on page load
+    window.addEventListener('beforeunload', () => {
+      window.scrollTo(0, 0);
+    });
+    
+    // Privacy Notice Modal on first visit
+    function showPrivacyNotice() {
+      if (!localStorage.getItem('damex-privacy-accepted')) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay show';
+        modal.id = 'privacyModal';
+        modal.innerHTML = `
+          <div class="modal-container">
+            <div class="modal-header">
+              <h2>Aviso de Privacidad</h2>
+            </div>
+            <div class="modal-content">
+              <div style="max-height: 400px; overflow-y: auto; padding: 20px;">
+                <h3>DAMEX TRANSPORTS - AVISO DE PRIVACIDAD</h3>
+                <p><strong>Responsable:</strong> DAMEX Transports, con domicilio en México.</p>
+                
+                <h4>Finalidades del tratamiento:</h4>
+                <ul>
+                  <li>Prestación de servicios de logística federal</li>
+                  <li>Procesamiento de exámenes psicofísicos</li>
+                  <li>Emisión de licencias federales</li>
+                  <li>Comunicación comercial y seguimiento</li>
+                </ul>
+                
+                <h4>Datos recabados:</h4>
+                <p>Nombre, correo electrónico, empresa, información de salud relacionada con exámenes médicos.</p>
+                
+                <h4>Derechos ARCO:</h4>
+                <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales.</p>
+                
+                <h4>Contacto:</h4>
+                <p>Para ejercer tus derechos: consultoriadamex@gmail.com | Tel: 55 2505 1252</p>
+                
+                <p><small>Al continuar navegando, aceptas este aviso de privacidad conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</small></p>
+              </div>
+              
+              <div class="modal-actions">
+                <button class="btn-primary" onclick="acceptPrivacy()">
+                  Acepto y Continuar
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+    }
+
+    function acceptPrivacy() {
+      localStorage.setItem('damex-privacy-accepted', 'true');
+      const modal = document.getElementById('privacyModal');
+      if (modal) {
+        modal.remove();
+      }
+    }
+
+    // Show privacy notice on page load
+    document.addEventListener('DOMContentLoaded', showPrivacyNotice);
+
+    </script>
+
+    <!-- Footer Section -->
+    <footer class="footer-section">
+      <div class="footer-container">
+        <div class="footer-content">
+          <!-- Company Info -->
+          <div class="footer-column">
+            <div class="footer-logo">
+              <h3>DAMEX TRANSPORTS</h3>
+              <p>Logística Federal Digital</p>
+            </div>
+            <p class="footer-description">
+              Especialistas en servicios de logística federal, exámenes psicofísicos, 
+              licencias federales y capacitación para el transporte.
+            </p>
+          </div>
+          
+          <!-- Services -->
+          <div class="footer-column">
+            <h4>Servicios</h4>
+            <ul class="footer-links">
+              <li>Exámenes Psicofísicos</li>
+              <li>Licencias Federales</li>
+              <li>Cursos de Capacitación</li>
+              <li>Digitalización</li>
+              <li>Asesoría Especializada</li>
+            </ul>
+          </div>
+          
+          <!-- Contact -->
+          <div class="footer-column">
+            <h4>Contacto</h4>
+            <div class="footer-contact">
+              <p>consultoriadamex@gmail.com</p>
+              <p>55 2505 1252</p>
+              <p>Lun - Vie: 9:00 - 18:00</p>
+              <p>Ciudad de México, México</p>
+            </div>
+          </div>
+          
+          <!-- Legal -->
+          <div class="footer-column">
+            <h4>Legal</h4>
+            <ul class="footer-links">
+              <li><a href="#" onclick="showPrivacyNotice()">Aviso de Privacidad</a></li>
+              <li>Términos y Condiciones</li>
+              <li>Política de Cookies</li>
+              <li>Derechos ARCO</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+          <div class="footer-bottom-content">
+            <p>&copy; 2024 DAMEX Transports. Todos los derechos reservados.</p>
+            <p>Cumplimos con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
